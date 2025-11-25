@@ -52,28 +52,111 @@ export class UserService
     }
 
     async onApplicationBootstrap() {
-        const setting = await this.settingService.getSettingValue(
-            SettingKey.INIT_DATA,
-        );
-        const update = setting || {};
-        if (!update.isAdminCreated) {
-            update.isAdminCreated = true;
+        try {
+            Logger.log("[UserService] Starting admin initialization...");
+
             const { defaultAdminUsername, defaultAdminPassword } =
                 this.configService.get("server", {
                     infer: true,
                 });
-            await this.userRepository.create({
-                username: defaultAdminUsername,
-                email: "admin@administrator.com",
-                password: await createUserPassword(defaultAdminPassword),
-                systemRole: SystemRole.ADMIN,
-                fullname: "Administrator",
-            });
-            Logger.verbose("Admin created");
-            await this.settingService.setSettingValue(
-                SettingKey.INIT_DATA,
-                update,
+
+            if (!defaultAdminUsername || !defaultAdminPassword) {
+                Logger.warn(
+                    "[UserService] Admin credentials not configured in environment",
+                );
+                return;
+            }
+
+            Logger.log(
+                `[UserService] Checking for admin user: ${defaultAdminUsername}`,
             );
+
+            // Luôn kiểm tra xem admin đã tồn tại chưa (không phụ thuộc vào setting)
+            const existingAdmin = await this.userRepository.getOne(
+                {
+                    username: defaultAdminUsername,
+                },
+                { enableDataPartition: false },
+            );
+
+            if (!existingAdmin) {
+                Logger.log(
+                    `[UserService] Admin user not found, creating new admin...`,
+                );
+
+                const hashedPassword =
+                    await createUserPassword(defaultAdminPassword);
+                Logger.log(
+                    `[UserService] Original password: ${defaultAdminPassword}`,
+                );
+                Logger.log(
+                    `[UserService] Hashed password length: ${hashedPassword.length}`,
+                );
+                Logger.log(
+                    `[UserService] Hashed password starts with: ${hashedPassword.substring(0, 20)}...`,
+                );
+
+                const createData = {
+                    username: defaultAdminUsername,
+                    email: "admin@administrator.com",
+                    password: hashedPassword,
+                    systemRole: SystemRole.ADMIN,
+                    fullname: "Administrator",
+                };
+
+                const createdAdmin = await this.userRepository.create(
+                    createData,
+                    { enableDataPartition: false },
+                );
+
+                Logger.log(
+                    `✅ Admin user created successfully: ${defaultAdminUsername} (ID: ${createdAdmin._id})`,
+                );
+                Logger.log(
+                    `[UserService] Created admin password in DB: ${createdAdmin.password?.substring(0, 20) || "NULL"}...`,
+                );
+
+                // Cập nhật setting sau khi tạo thành công
+                const setting = await this.settingService.getSettingValue(
+                    SettingKey.INIT_DATA,
+                );
+                const update = setting || {};
+                update.isAdminCreated = true;
+                await this.settingService.setSettingValue(
+                    SettingKey.INIT_DATA,
+                    update,
+                );
+            } else {
+                Logger.log(
+                    `ℹ️  Admin user already exists: ${defaultAdminUsername} (ID: ${existingAdmin._id})`,
+                );
+                Logger.log(
+                    `[UserService] Existing admin password length: ${existingAdmin.password?.length || 0}`,
+                );
+                if (
+                    existingAdmin.password &&
+                    !existingAdmin.password.startsWith("$2b$")
+                ) {
+                    Logger.warn(
+                        `[UserService] WARNING: Admin password is not hashed! Updating password...`,
+                    );
+                    const hashedPassword =
+                        await createUserPassword(defaultAdminPassword);
+                    await this.userRepository.updateById(
+                        existingAdmin._id,
+                        { password: hashedPassword },
+                        { enableDataPartition: false },
+                    );
+                    Logger.log(`✅ Admin password has been updated and hashed`);
+                }
+            }
+        } catch (error) {
+            Logger.error(
+                "Failed to initialize admin user",
+                error.stack,
+                "UserService",
+            );
+            Logger.error(`[UserService] Error details: ${error.message}`);
         }
     }
 

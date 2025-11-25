@@ -211,13 +211,22 @@ export class AuthService extends BaseService<Auth, AuthRepository> {
             { username },
             { enableDataPartition: false },
         );
-        if (user) {
-            const match = await compareUserPassword(password, user.password);
-            if (match) {
-                return user;
-            }
+        if (!user) {
+            console.log(`[AuthService] User not found: ${username}`);
+            throw ApiError.Unauthorized("error-unauthorized");
         }
-        throw ApiError.Unauthorized("error-unauthorized");
+        if (!user.password) {
+            console.log(`[AuthService] User has no password: ${username}`);
+            throw ApiError.Unauthorized("error-unauthorized");
+        }
+        const match = await compareUserPassword(password, user.password);
+        if (!match) {
+            console.log(
+                `[AuthService] Password mismatch for user: ${username}`,
+            );
+            throw ApiError.Unauthorized("error-unauthorized");
+        }
+        return user;
     }
 
     async testAuth() {

@@ -19,3 +19,16 @@ export const DATA_PARTITION_USER = "DataPartitionUser";
 
 export const QUY_TAC_MA = "QuyTacMa";
 export const HAM_SINH_MA = "HamSinhMa";
+
+export const VOCABULARY = "Vocabulary";
+export const VOCABULARY_EXAMPLE = "VocabularyExample";
+
+export const STUDY_SET = "StudySet";
+export const STUDY_SET_VOCAB_MAP = "StudySetVocabMap";
+export const FOLDER = "Folder";
+export const FOLDER_ITEM = "FolderItem";
+export const SRS_PROGRESS = "SrsProgress";
+export const QUIZ = "Quiz";
+export const QUIZ_QUESTION = "QuizQuestion";
+export const QUIZ_ANSWER = "QuizAnswer";
+export const QUIZ_RESULT = "QuizResult";

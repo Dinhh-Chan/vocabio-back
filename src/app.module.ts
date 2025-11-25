@@ -21,12 +21,24 @@ import { UserModule } from "./modules/user/user.module";
 import { EventModule } from "./modules/event/event.module";
 import { EventLogModule } from "./modules/event-log/event-log.module";
 import { WebSocketModule } from "./modules/websocket/websocket.module";
+import { VocabularyModule } from "./modules/vocabulary/vocabulary.module";
+import { VocabularyExampleModule } from "./modules/vocabulary-example/vocabulary-example.module";
+import { StudySetModule } from "./modules/study-set/study-set.module";
+import { StudySetVocabMapModule } from "./modules/study-set-vocab-map/study-set-vocab-map.module";
+import { FolderModule } from "./modules/folder/folder.module";
+import { SrsProgressModule } from "./modules/srs-progress/srs-progress.module";
+import { QuizModule } from "./modules/quiz/quiz.module";
+import { QuizQuestionModule } from "./modules/quiz-question/quiz-question.module";
+import { QuizAnswerModule } from "./modules/quiz-answer/quiz-answer.module";
+import { QuizResultModule } from "./modules/quiz-result/quiz-result.module";
+import { UserManagementModule } from "./modules/user-management/user-management.module";
 
 @Module({
     imports: [
         ...DefaultModules,
         AuthModule,
         UserModule,
+        UserManagementModule,
         EventAccountModule,
         OneSignalModule,
         NotificationModule,
@@ -45,6 +57,16 @@ import { WebSocketModule } from "./modules/websocket/websocket.module";
         EventModule,
         EventLogModule,
         WebSocketModule,
+        VocabularyModule,
+        VocabularyExampleModule,
+        StudySetModule,
+        StudySetVocabMapModule,
+        FolderModule,
+        SrsProgressModule,
+        QuizModule,
+        QuizQuestionModule,
+        QuizAnswerModule,
+        QuizResultModule,
     ],
     providers: [...DefaultProviders],
     controllers: [AppController],

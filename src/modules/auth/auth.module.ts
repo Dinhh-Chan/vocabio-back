@@ -1,11 +1,14 @@
 import { Entity } from "@module/repository";
 import { RepositoryProvider } from "@module/repository/common/repository";
 import { TransactionProvider } from "@module/repository/common/transaction";
+import { UserModel } from "@module/repository/sequelize/model/user.model";
 import { MongoTransaction } from "@module/repository/mongo/mongo.transaction";
-import { UserMongoRepository } from "@module/user/repository/user-mongo.repository";
+import { SqlTransaction } from "@module/repository/sequelize/sql.transaction";
 import { UserModule } from "@module/user/user.module";
+import { UserSqlRepository } from "@module/user/repository/user-sql.repository";
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
+import { SequelizeModule } from "@nestjs/sequelize";
 import { ScheduleModule } from "@nestjs/schedule";
 import { AuthPublicController } from "./auth-public.controller";
 import { AuthController } from "./auth.controller";
@@ -14,12 +17,18 @@ import { JwtStrategy } from "./common/jwt.strategy";
 import { AuthMongoRepository } from "./repository/auth-mongo.repository";
 
 @Module({
-    imports: [JwtModule.register({}), UserModule, ScheduleModule.forRoot()],
+    imports: [
+        JwtModule.register({}),
+        UserModule,
+        SequelizeModule.forFeature([UserModel]),
+        ScheduleModule.forRoot(),
+    ],
     providers: [
         AuthService,
         RepositoryProvider(Entity.AUTH, AuthMongoRepository),
-        RepositoryProvider(Entity.USER, UserMongoRepository),
+        RepositoryProvider(Entity.USER, UserSqlRepository),
         TransactionProvider(MongoTransaction),
+        TransactionProvider(SqlTransaction),
         JwtStrategy,
     ],
     controllers: [AuthPublicController, AuthController],

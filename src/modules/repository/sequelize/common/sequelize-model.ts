@@ -16,6 +16,17 @@ import { SettingModel } from "../model/setting.model";
 import TopicModel from "../model/topic.model";
 import { UserTopicModel } from "../model/user-topic.model";
 import { UserModel } from "../model/user.model";
+import { VocabularyExampleModel } from "../model/vocabulary-example.model";
+import { VocabularyModel } from "../model/vocabulary.model";
+import { StudySetModel } from "../model/study-set.model";
+import { StudySetVocabMapModel } from "../model/study-set-vocab-map.model";
+import { FolderModel } from "../model/folder.model";
+import { FolderItemModel } from "../model/folder-item.model";
+import { SrsProgressModel } from "../model/srs-progress.model";
+import { QuizModel } from "../model/quiz.model";
+import { QuizQuestionModel } from "../model/quiz-question.model";
+import { QuizAnswerModel } from "../model/quiz-answer.model";
+import { QuizResultModel } from "../model/quiz-result.model";
 
 export const SequelizeModel: ModelCtor<Model>[] = [
     UserModel,
@@ -35,4 +46,15 @@ export const SequelizeModel: ModelCtor<Model>[] = [
     AuditLogModel,
     DataPartitionModel,
     DataPartitionUserModel,
+    VocabularyModel,
+    VocabularyExampleModel,
+    StudySetModel,
+    StudySetVocabMapModel,
+    FolderModel,
+    FolderItemModel,
+    SrsProgressModel,
+    QuizModel,
+    QuizQuestionModel,
+    QuizAnswerModel,
+    QuizResultModel,
 ];
