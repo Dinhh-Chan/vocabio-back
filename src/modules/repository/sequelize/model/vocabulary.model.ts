@@ -22,8 +22,14 @@ export class VocabularyModel extends Model implements Vocabulary {
     @Column({ allowNull: false })
     word: string;
 
+    @Column({ allowNull: true, field: "word_language" })
+    wordLanguage?: string;
+
     @Column({ type: DataType.TEXT, allowNull: true })
     definition?: string;
+
+    @Column({ allowNull: true, field: "definition_language" })
+    definitionLanguage?: string;
 
     @Column({ allowNull: true })
     ipa?: string;

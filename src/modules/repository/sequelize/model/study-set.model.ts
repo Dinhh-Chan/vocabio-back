@@ -25,9 +25,6 @@ export class StudySetModel extends Model implements StudySet {
     @Column({ type: DataType.TEXT, allowNull: true })
     description?: string;
 
-    @Column({ allowNull: true, field: "cover_image" })
-    coverImage?: string;
-
     @Column({ type: DataType.INTEGER, allowNull: true })
     difficulty?: number;
 

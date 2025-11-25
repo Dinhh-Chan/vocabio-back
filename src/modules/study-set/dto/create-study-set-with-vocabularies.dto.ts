@@ -1,17 +1,16 @@
-import { StrObjectId } from "@common/constant";
+import {
+    IsArray,
+    IsBoolean,
+    IsNumber,
+    IsOptional,
+    IsString,
+    ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
 import { EntityDefinition } from "@common/constant/class/entity-definition";
-import { BaseEntity } from "@common/interface/base-entity.interface";
-import { Entity } from "@module/repository";
-import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
+import { CreateVocabularyDto } from "./create-vocabulary.dto";
 
-export class StudySet implements BaseEntity {
-    @StrObjectId()
-    _id: string;
-
-    @IsString()
-    @EntityDefinition.field({ label: "User ID", required: true })
-    userId: string;
-
+export class CreateStudySetWithVocabulariesDto {
     @IsString()
     @EntityDefinition.field({ label: "Title", required: true })
     title: string;
@@ -31,7 +30,9 @@ export class StudySet implements BaseEntity {
     @EntityDefinition.field({ label: "Is Public" })
     isPublic?: boolean;
 
-    createdAt?: Date;
-    updatedAt?: Date;
-    dataPartitionCode?: string;
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreateVocabularyDto)
+    @EntityDefinition.field({ label: "Vocabularies", required: true })
+    vocabularies: CreateVocabularyDto[];
 }

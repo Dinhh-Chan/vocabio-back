@@ -1,17 +1,7 @@
-import { StrObjectId } from "@common/constant";
-import { EntityDefinition } from "@common/constant/class/entity-definition";
-import { BaseEntity } from "@common/interface/base-entity.interface";
-import { Entity } from "@module/repository";
 import { IsNumber, IsOptional, IsString } from "class-validator";
+import { EntityDefinition } from "@common/constant/class/entity-definition";
 
-export class Vocabulary implements BaseEntity {
-    @StrObjectId()
-    _id: string;
-
-    @IsString()
-    @EntityDefinition.field({ label: "User ID", required: true })
-    userId: string;
-
+export class CreateVocabularyDto {
     @IsString()
     @EntityDefinition.field({ label: "Word", required: true })
     word: string;
@@ -45,18 +35,4 @@ export class Vocabulary implements BaseEntity {
     @IsOptional()
     @EntityDefinition.field({ label: "Priority" })
     priority?: number;
-
-    @IsNumber()
-    @IsOptional()
-    @EntityDefinition.field({ label: "Learned Count" })
-    learnedCount?: number;
-
-    @IsNumber()
-    @IsOptional()
-    @EntityDefinition.field({ label: "Edited Count" })
-    editedCount?: number;
-
-    createdAt?: Date;
-    updatedAt?: Date;
-    dataPartitionCode?: string;
 }
